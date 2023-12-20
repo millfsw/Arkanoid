@@ -63,7 +63,7 @@ while running:
 
     if ball.left < 10 or ball.right >= screen_width:
         ball_speed_x *= -1
-    if ball.top < 10 or ball.colliderect(brick):
+    if ball.top < 10 or ball.colliderect(platform):
         ball_speed_y *= -1
 
     for brick in bricks:
