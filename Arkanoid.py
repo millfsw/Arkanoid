@@ -24,7 +24,7 @@ ball = pygame.Rect(ball_x, ball_y, ball_radius, ball_radius)
 ball_speed_x = 3
 ball_speed_y = -3
 
-brick_width = 60
+brick_width = 55
 brick_height = 30
 brick_gap = 10
 brick_rows = 5
