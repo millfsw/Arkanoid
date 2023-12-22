@@ -37,8 +37,8 @@ for row in range(brick_rows):
         brick = pygame.Rect(brick_x, brick_y, brick_width, brick_height)
         bricks.append(brick)
 
-coconut = pygame.image.load("coconut.png").convert_alpha()
-monkey = pygame.image.load("monkey.png").convert_alpha()
+# coconut = pygame.image.load("coconut.png").convert_alpha()
+# monkey = pygame.image.load("monkey.png").convert_alpha()
 
 while running:
     screen.fill("black")
