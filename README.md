@@ -17,25 +17,25 @@
 1. Убедитесь, что у вас установлен Python (версия 3.x) и библиотека Pygame. Если Pygame не установлена, выполните следующую команду:
 
    
-   pip install pygame
+   `pip install pygame`
    
 
 2. Склонируйте репозиторий или загрузите архив с игрой.
 
    
-   git clone https://github.com/millfsw/Arkanoid.git
+   `git clone https://github.com/millfsw/Arkanoid.git`
    
 
 3. Перейдите в директорию с игрой:
 
    
-   cd Arkanoid
+   `cd Arkanoid`
    
 
 4. Запустите игру:
 
    
-   python Arkanoid.py
+   `python Arkanoid.py`
    
 
 ## Управление
