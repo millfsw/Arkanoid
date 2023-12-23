@@ -1,4 +1,6 @@
 import pygame
+import os
+import sys
 from pygame.locals import *
 
 pygame.init()
@@ -39,6 +41,48 @@ for row in range(brick_rows):
 
 # coconut = pygame.image.load("coconut.png").convert_alpha()
 # monkey = pygame.image.load("monkey.png").convert_alpha()
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+
+def load_image(name, color_key=None):
+    fullname = os.path.join("data", name)
+    try:
+        image = pygame.image.load(fullname).convert_alpha()
+    except pygame.error as message:
+        print("Cannot load image:", name)
+        raise SystemExit(message)
+
+    if color_key is not None:
+        if color_key == -1:
+            color_key = image.get_at((0, 0))
+        image.set_colorkey(color_key)
+    else:
+        image = image.convert_alpha()
+    return image
+
+
+def start_screen():
+
+    fon = pygame.transform.scale(load_image("start_window.png"), (800, 600))
+    screen.blit(fon, (0, 0))
+    font = pygame.font.Font(None, 30)
+    text_coord = 50
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                return  # начинаем игру
+        pygame.display.flip()
+        clock.tick(60)
+
+
+start_screen()
 
 while running:
     screen.fill("black")
