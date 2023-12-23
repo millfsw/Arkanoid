@@ -1,6 +1,6 @@
 # Игра "Арканоид" на Python
 
-![Arkanoid](arkanoid_screenshot.png)
+<image src="https://github.com/millfsw/Arkanoid/assets/145267104/7750074e-5d3e-49ae-81f8-33f50a0c3f71" width="600" height="400">
 
 Добро пожаловать в игру "Арканоид"! Это классическая аркадная игра, написанная на языке Python с использованием библиотеки Pygame.
 
