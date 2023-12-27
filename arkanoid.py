@@ -65,68 +65,147 @@ def load_image(name, color_key=None):
     return image
 
 
-def start_screen():
-    fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
-    screen.blit(fon, (0, 0))
+def open_guide_window():
+    guide_screen = pygame.display.set_mode(
+        screen_size, pygame.SCALED | pygame.FULLSCREEN
+    )
 
-    width = screen.get_width()
-    height = screen.get_height()
+    guide_font = pygame.font.SysFont("Corbel", 35)
+    guide_title = guide_font.render("Гайд по игре 'Арканоид'", True, "black")
+    guide_text = [
+        "Добро пожаловать в игру 'Арканоид'",
+        "",
+        "Цель:",
+        "  - Разрушить все дощечки на уровне, отбивая кокос с помощью обезьянки.",
+        "",
+        "Управление:",
+        "  - Используйте стрелки для управления обезьянкой",
+        "  - Нажмите ESC для выхода из игры",
+        "",
+        "Геймплей:",
+        "  - Кокос отскакивает от обезьянки и дощечек",
+        "  - Разбейте все дощечки для того, чтобы пройти на следующий уровень.",
+        "  - Если кокос уйдет за нижнию границу экрана, игра будет окончено",
+        "  - Накапливайте очки за каждую сломанную дощечку",
+        "",
+        "Наслаждайтесь игрой 'Арканоид'!",
+    ]
 
-    smallfont = pygame.font.SysFont("Corbel", 35)
-    color_light = (170, 170, 170)
-    color_dark = (100, 100, 100)
+    guide_y = 120
 
-    text_play = smallfont.render("play", True, "white")
-    text_quit = smallfont.render("quit", True, "white")
-    text_settings = smallfont.render("settings", True, "white")
-    text_guide = smallfont.render("guide", True, "white")
+    guide_screen.fill((207, 143, 103))
+
+    guide_screen.blit(guide_title, (250, 50))
+
+    for line in guide_text:
+        guide_line = guide_font.render(line, True, "black")
+        guide_screen.blit(guide_line, (250, guide_y))
+        guide_y += 40
 
     while True:
+
+        d = pygame.key.get_pressed()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or d[pygame.K_ESCAPE]:
+                return
+        pygame.display.flip()
+
+
+# def open_settings_window():
+#     settings_screen = pygame.display.set_mode(
+#         screen_size, pygame.SCALED | pygame.FULLSCREEN
+#     )
+
+#     settings_font = pygame.font.SysFont("Corbel", 35)
+#     settings_title = settings_font.render("Настройки игры 'Арканоид'", True, "black")
+#     settings_text = [
+#         "Звук: Вкл",
+#         "Музыка: Вкл",
+#         "Полноэкранный режим: Вкл",
+#     ]
+
+#     settings_y = 120
+
+#     settings_screen.fill((207, 143, 103))
+
+#     settings_screen.blit(settings_title, (200, 50))
+
+#     for line in settings_text:
+#         settings_line = settings_font.render(line, True, "black")
+#         settings_screen.blit(settings_line, (250, settings_y))
+#         settings_y += 50
+
+#     while True:
+#         d = pygame.key.get_pressed()
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT or d[pygame.K_ESCAPE]:
+#                 return
+#         pygame.display.flip()
+
+
+def start_screen():
+    while True:
+        fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
+        screen.blit(fon, (0, 0))
+
+        width = screen.get_width()
+        height = screen.get_height()
+
+        smallfont = pygame.font.SysFont("Corbel", 35)
+        color_light = (170, 170, 170)
+        color_dark = (100, 100, 100)
+
+        text_play = smallfont.render("Играть", True, "white")
+        text_quit = smallfont.render("Выйти", True, "white")
+        text_settings = smallfont.render("Настройки", True, "white")
+        text_guide = smallfont.render("Справка", True, "white")
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if width / 2 - 140 <= mouse[0] <= width / 2 and 250 <= mouse[1] <= 290:
+                if width / 2 - 170 <= mouse[0] <= width / 2 and 250 <= mouse[1] <= 290:
                     return
                 elif (
-                    width / 2 - 140 <= mouse[0] <= width / 2 and 300 <= mouse[1] <= 340
+                    width / 2 - 170 <= mouse[0] <= width / 2 and 300 <= mouse[1] <= 340
                 ):
                     pass
+                    # open_settings_window()
                 elif (
-                    width / 2 - 140 <= mouse[0] <= width / 2 and 350 <= mouse[1] <= 390
+                    width / 2 - 170 <= mouse[0] <= width / 2 and 350 <= mouse[1] <= 390
                 ):
-                    pass
+                    open_guide_window()
                 elif (
-                    width / 2 - 140 <= mouse[0] <= width / 2 and 400 <= mouse[1] <= 440
+                    width / 2 - 170 <= mouse[0] <= width / 2 and 400 <= mouse[1] <= 440
                 ):
                     terminate()
 
         mouse = pygame.mouse.get_pos()
 
-        if width / 2 - 140 <= mouse[0] <= width / 2 and 250 <= mouse[1] <= 290:
-            pygame.draw.rect(screen, color_light, [width / 2 - 140, 250, 140, 40])
+        if width / 2 - 170 <= mouse[0] <= width / 2 and 250 <= mouse[1] <= 290:
+            pygame.draw.rect(screen, color_light, [width / 2 - 160, 250, 170, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 140, 250, 140, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 250, 170, 40])
 
-        if width / 2 - 140 <= mouse[0] <= width / 2 and 300 <= mouse[1] <= 340:
-            pygame.draw.rect(screen, color_light, [width / 2 - 140, 300, 140, 40])
+        if width / 2 - 170 <= mouse[0] <= width / 2 and 300 <= mouse[1] <= 340:
+            pygame.draw.rect(screen, color_light, [width / 2 - 160, 300, 170, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 140, 300, 140, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 300, 170, 40])
 
-        if width / 2 - 140 <= mouse[0] <= width / 2 and 350 <= mouse[1] <= 390:
-            pygame.draw.rect(screen, color_light, [width / 2 - 140, 350, 140, 40])
+        if width / 2 - 170 <= mouse[0] <= width / 2 and 350 <= mouse[1] <= 390:
+            pygame.draw.rect(screen, color_light, [width / 2 - 160, 350, 170, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 140, 350, 140, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 350, 170, 40])
 
-        if width / 2 - 140 <= mouse[0] <= width / 2 and 400 <= mouse[1] <= 440:
-            pygame.draw.rect(screen, color_light, [width / 2 - 140, 400, 140, 40])
+        if width / 2 - 170 <= mouse[0] <= width / 2 and 400 <= mouse[1] <= 440:
+            pygame.draw.rect(screen, color_light, [width / 2 - 160, 400, 170, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 140, 400, 140, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 400, 170, 40])
 
-        screen.blit(text_play, (width / 2 - 100, 250))
-        screen.blit(text_settings, (width / 2 - 125, 300))
-        screen.blit(text_guide, (width / 2 - 110, 350))
-        screen.blit(text_quit, (width / 2 - 100, 400))
+        screen.blit(text_play, (width / 2 - 125, 250))
+        screen.blit(text_settings, (width / 2 - 155, 300))
+        screen.blit(text_guide, (width / 2 - 135, 350))
+        screen.blit(text_quit, (width / 2 - 125, 400))
 
         pygame.display.flip()
 
