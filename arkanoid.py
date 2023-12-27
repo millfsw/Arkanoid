@@ -164,48 +164,54 @@ def start_screen():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if width / 2 - 170 <= mouse[0] <= width / 2 and 250 <= mouse[1] <= 290:
+                if (
+                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    and 550 <= mouse[1] <= 590
+                ):
                     return
                 elif (
-                    width / 2 - 170 <= mouse[0] <= width / 2 and 300 <= mouse[1] <= 340
+                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    and 600 <= mouse[1] <= 640
                 ):
                     pass
                     # open_settings_window()
                 elif (
-                    width / 2 - 170 <= mouse[0] <= width / 2 and 350 <= mouse[1] <= 390
+                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    and 650 <= mouse[1] <= 690
                 ):
                     open_guide_window()
                 elif (
-                    width / 2 - 170 <= mouse[0] <= width / 2 and 400 <= mouse[1] <= 440
+                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    and 700 <= mouse[1] <= 740
                 ):
                     terminate()
 
         mouse = pygame.mouse.get_pos()
 
-        if width / 2 - 170 <= mouse[0] <= width / 2 and 250 <= mouse[1] <= 290:
-            pygame.draw.rect(screen, color_light, [width / 2 - 160, 250, 170, 40])
+        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 550 <= mouse[1] <= 590:
+            pygame.draw.rect(screen, color_light, [width / 2 - 150, 550, 250, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 250, 170, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 550, 250, 40])
 
-        if width / 2 - 170 <= mouse[0] <= width / 2 and 300 <= mouse[1] <= 340:
-            pygame.draw.rect(screen, color_light, [width / 2 - 160, 300, 170, 40])
+        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 600 <= mouse[1] <= 640:
+            pygame.draw.rect(screen, color_light, [width / 2 - 150, 600, 250, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 300, 170, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 600, 250, 40])
 
-        if width / 2 - 170 <= mouse[0] <= width / 2 and 350 <= mouse[1] <= 390:
-            pygame.draw.rect(screen, color_light, [width / 2 - 160, 350, 170, 40])
+        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 650 <= mouse[1] <= 690:
+            pygame.draw.rect(screen, color_light, [width / 2 - 150, 650, 250, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 350, 170, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 650, 250, 40])
 
-        if width / 2 - 170 <= mouse[0] <= width / 2 and 400 <= mouse[1] <= 440:
-            pygame.draw.rect(screen, color_light, [width / 2 - 160, 400, 170, 40])
+        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 700 <= mouse[1] <= 740:
+            pygame.draw.rect(screen, color_light, [width / 2 - 150, 700, 250, 40])
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 160, 400, 170, 40])
+            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 700, 250, 40])
 
-        screen.blit(text_play, (width / 2 - 125, 250))
-        screen.blit(text_settings, (width / 2 - 155, 300))
-        screen.blit(text_guide, (width / 2 - 135, 350))
-        screen.blit(text_quit, (width / 2 - 125, 400))
+        screen.blit(text_play, (width / 2 - 80, 555))
+        screen.blit(text_settings, (width / 2 - 105, 605))
+        screen.blit(text_guide, (width / 2 - 90, 655))
+        screen.blit(text_quit, (width / 2 - 75, 705))
 
         pygame.display.flip()
 
