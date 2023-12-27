@@ -6,7 +6,7 @@ from pygame.locals import *
 pygame.init()
 pygame.display.set_caption("Арканоид")
 screen_size = screen_width, screen_height = 800, 600
-screen = pygame.display.set_mode(screen_size)
+screen = pygame.display.set_mode(screen_size, pygame.SCALED | pygame.FULLSCREEN)
 
 running = True
 clock = pygame.time.Clock()
