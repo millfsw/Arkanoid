@@ -3,41 +3,6 @@ import os
 import sys
 from pygame.locals import *
 
-pygame.init()
-pygame.display.set_caption("Арканоид")
-screen_size = screen_width, screen_height = 1580, 900
-screen = pygame.display.set_mode(screen_size, pygame.SCALED | pygame.FULLSCREEN)
-
-running = True
-clock = pygame.time.Clock()
-fps = 60
-
-platform_width = 100
-platform_height = 10
-platform_x = screen_width // 2 - platform_width // 2
-platform_y = screen_height - platform_height - 10
-platform = pygame.Rect(platform_x, platform_y, platform_width, platform_height)
-
-ball_radius = 10
-ball_x = screen_width // 2
-ball_y = platform_y - ball_radius - 1
-ball = pygame.Rect(ball_x, ball_y, ball_radius, ball_radius)
-
-ball_speed_x = 6
-ball_speed_y = -6
-
-brick_width = 55
-brick_height = 30
-brick_gap = 10
-brick_rows = 5
-brick_cols = (screen_width - brick_gap) // (brick_width + brick_gap)
-bricks = []
-for row in range(brick_rows):
-    for col in range(brick_cols):
-        brick_x = brick_gap + col * (brick_width + brick_gap)
-        brick_y = brick_gap + row * (brick_height + brick_gap)
-        brick = pygame.Rect(brick_x, brick_y, brick_width, brick_height)
-        bricks.append(brick)
 
 # coconut = pygame.image.load("coconut.png").convert_alpha()
 # monkey = pygame.image.load("monkey.png").convert_alpha()
@@ -216,15 +181,81 @@ def start_screen():
         pygame.display.flip()
 
 
+def show_result_window(result):
+    while True:
+        result_screen = pygame.display.set_mode(
+            screen_size, pygame.SCALED | pygame.FULLSCREEN
+        )
+        result_screen.fill((0, 0, 0))
+
+        result_font = pygame.font.SysFont("Corbel", 60)
+        if result == "win":
+            result_text = result_font.render("Победа!", True, "white")
+        else:
+            result_text = result_font.render("Game Over", True, "white")
+
+        result_text_rect = result_text.get_rect(
+            center=(screen_width // 2, screen_height // 2)
+        )
+        score_surface = score_font.render("Score: " + str(score), True, "white")
+        screen.blit(score_surface, (screen_width // 2 - 45, screen_height // 2 + 40))
+        result_screen.blit(result_text, result_text_rect)
+
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                terminate()
+
+
+pygame.init()
+pygame.display.set_caption("Арканоид")
+screen_size = screen_width, screen_height = 1580, 900
+screen = pygame.display.set_mode(screen_size, pygame.SCALED | pygame.FULLSCREEN)
+
+running = True
+clock = pygame.time.Clock()
+fps = 60
+
+platform_width = 100
+platform_height = 10
+platform_x = screen_width // 2 - platform_width // 2
+platform_y = screen_height - platform_height - 10
+platform = pygame.Rect(platform_x, platform_y, platform_width, platform_height)
+
+ball_radius = 10
+ball_x = screen_width // 2
+ball_y = platform_y - ball_radius - 1
+ball = pygame.Rect(ball_x, ball_y, ball_radius, ball_radius)
+
+ball_speed_x = 6
+ball_speed_y = -6
+
+brick_width = 130
+brick_height = 30
+brick_gap = 10
+brick_rows = 5
+brick_cols = (screen_width - brick_gap) // (brick_width + brick_gap)
+bricks = []
+for row in range(brick_rows):
+    for col in range(brick_cols):
+        brick_x = brick_gap + col * (brick_width + brick_gap)
+        brick_y = brick_gap + row * (brick_height + brick_gap)
+        brick = pygame.Rect(brick_x, brick_y, brick_width, brick_height)
+        bricks.append(brick)
+
 start_screen()
+fon = pygame.transform.scale(load_image("fon_screen.png"), (1580, 900))
+score = 0
+score_font = pygame.font.SysFont("Corbel", 30)
 
 while running:
-    screen.fill("black")
+    screen.blit(fon, (0, 0))
+    # screen.fill("black")
     pygame.draw.rect(screen, "blue", platform)
     pygame.draw.circle(screen, "red", (ball.x, ball.y), ball_radius)
 
     for brick in bricks:
-        pygame.draw.rect(screen, "white", brick)
+        pygame.draw.rect(screen, "brown", brick)
 
     d = pygame.key.get_pressed()
 
@@ -250,10 +281,19 @@ while running:
         if ball.colliderect(brick):
             bricks.remove(brick)
             ball_speed_y *= -1
+            score += 10
             break
 
-    if ball.bottom >= screen_height or len(bricks) == 0:
+    if ball.bottom >= screen_height:
+        show_result_window("gameover")
         running = False
+
+    elif len(bricks) == 0:
+        show_result_window("win")
+        running = False
+
+    score_surface = score_font.render("Score: " + str(score), True, "white")
+    screen.blit(score_surface, (10, 10))
 
     clock.tick(fps)
     pygame.display.flip()
