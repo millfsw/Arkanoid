@@ -110,102 +110,120 @@ def open_guide_window():
 
 
 def start_screen():
+    fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
+    screen.blit(fon, (0, 0))
+
+    smallfont = pygame.font.SysFont("Corbel", 35)
+    color_light = (170, 170, 170)
+    color_dark = (100, 100, 100)
+
+    text_play = smallfont.render("Играть", True, "white")
+    text_quit = smallfont.render("Выйти", True, "white")
+    text_settings = smallfont.render("Настройки", True, "white")
+    text_guide = smallfont.render("Справка", True, "white")
+
     while True:
-        fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
-        screen.blit(fon, (0, 0))
-
-        width = screen.get_width()
-        height = screen.get_height()
-
-        smallfont = pygame.font.SysFont("Corbel", 35)
-        color_light = (170, 170, 170)
-        color_dark = (100, 100, 100)
-
-        text_play = smallfont.render("Играть", True, "white")
-        text_quit = smallfont.render("Выйти", True, "white")
-        text_settings = smallfont.render("Настройки", True, "white")
-        text_guide = smallfont.render("Справка", True, "white")
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if (
-                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
                     and 550 <= mouse[1] <= 590
                 ):
                     return
                 elif (
-                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
                     and 600 <= mouse[1] <= 640
                 ):
                     pass
                     # open_settings_window()
                 elif (
-                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
                     and 650 <= mouse[1] <= 690
                 ):
                     open_guide_window()
                 elif (
-                    width / 2 - 150 <= mouse[0] <= width / 2 + 100
+                    screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
                     and 700 <= mouse[1] <= 740
                 ):
                     terminate()
 
         mouse = pygame.mouse.get_pos()
 
-        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 550 <= mouse[1] <= 590:
-            pygame.draw.rect(screen, color_light, [width / 2 - 150, 550, 250, 40])
+        if (
+            screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
+            and 550 <= mouse[1] <= 590
+        ):
+            pygame.draw.rect(
+                screen, color_light, [screen_width / 2 - 150, 550, 250, 40]
+            )
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 550, 250, 40])
+            pygame.draw.rect(screen, color_dark, [screen_width / 2 - 150, 550, 250, 40])
 
-        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 600 <= mouse[1] <= 640:
-            pygame.draw.rect(screen, color_light, [width / 2 - 150, 600, 250, 40])
+        if (
+            screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
+            and 600 <= mouse[1] <= 640
+        ):
+            pygame.draw.rect(
+                screen, color_light, [screen_width / 2 - 150, 600, 250, 40]
+            )
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 600, 250, 40])
+            pygame.draw.rect(screen, color_dark, [screen_width / 2 - 150, 600, 250, 40])
 
-        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 650 <= mouse[1] <= 690:
-            pygame.draw.rect(screen, color_light, [width / 2 - 150, 650, 250, 40])
+        if (
+            screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
+            and 650 <= mouse[1] <= 690
+        ):
+            pygame.draw.rect(
+                screen, color_light, [screen_width / 2 - 150, 650, 250, 40]
+            )
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 650, 250, 40])
+            pygame.draw.rect(screen, color_dark, [screen_width / 2 - 150, 650, 250, 40])
 
-        if width / 2 - 150 <= mouse[0] <= width / 2 + 100 and 700 <= mouse[1] <= 740:
-            pygame.draw.rect(screen, color_light, [width / 2 - 150, 700, 250, 40])
+        if (
+            screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
+            and 700 <= mouse[1] <= 740
+        ):
+            pygame.draw.rect(
+                screen, color_light, [screen_width / 2 - 150, 700, 250, 40]
+            )
         else:
-            pygame.draw.rect(screen, color_dark, [width / 2 - 150, 700, 250, 40])
+            pygame.draw.rect(screen, color_dark, [screen_width / 2 - 150, 700, 250, 40])
 
-        screen.blit(text_play, (width / 2 - 80, 555))
-        screen.blit(text_settings, (width / 2 - 105, 605))
-        screen.blit(text_guide, (width / 2 - 90, 655))
-        screen.blit(text_quit, (width / 2 - 75, 705))
+        screen.blit(text_play, (screen_width / 2 - 80, 555))
+        screen.blit(text_settings, (screen_width / 2 - 105, 605))
+        screen.blit(text_guide, (screen_width / 2 - 90, 655))
+        screen.blit(text_quit, (screen_width / 2 - 75, 705))
 
         pygame.display.flip()
 
 
 def show_result_window(result):
+    result_screen = pygame.display.set_mode(
+        screen_size, pygame.SCALED | pygame.FULLSCREEN
+    )
+    result_screen.fill((0, 0, 0))
+
+    result_font = pygame.font.SysFont("Corbel", 60)
+    if result == "win":
+        result_text = result_font.render("Победа!", True, "white")
+    else:
+        result_text = result_font.render("Game Over", True, "white")
+
+    result_text_rect = result_text.get_rect(
+        center=(screen_width // 2, screen_height // 2)
+    )
+    score_surface = score_font.render("Score: " + str(score), True, "white")
+    result_screen.blit(result_text, result_text_rect)
+    result_screen.blit(score_surface, (screen_width // 2 - 50, screen_height // 2 + 40))
+
     while True:
-        result_screen = pygame.display.set_mode(
-            screen_size, pygame.SCALED | pygame.FULLSCREEN
-        )
-        result_screen.fill((0, 0, 0))
-
-        result_font = pygame.font.SysFont("Corbel", 60)
-        if result == "win":
-            result_text = result_font.render("Победа!", True, "white")
-        else:
-            result_text = result_font.render("Game Over", True, "white")
-
-        result_text_rect = result_text.get_rect(
-            center=(screen_width // 2, screen_height // 2)
-        )
-        score_surface = score_font.render("Score: " + str(score), True, "white")
-        screen.blit(score_surface, (screen_width // 2 - 45, screen_height // 2 + 40))
-        result_screen.blit(result_text, result_text_rect)
-
-        pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
                 terminate()
+
+        pygame.display.flip()
 
 
 pygame.init()
@@ -246,12 +264,12 @@ for row in range(brick_rows):
         brick = pygame.Rect(brick_x, brick_y, brick_width, brick_height)
         bricks.append(brick)
 
-start_screen()
 fon = pygame.transform.scale(load_image("fon_screen.png"), (1580, 900))
 score = 0
 score_font = pygame.font.SysFont("Corbel", 30)
 pause_font = pygame.font.SysFont("Corbel", 60)
 
+start_screen()
 while running:
     screen.blit(fon, (0, 0))
     # screen.fill("black")
