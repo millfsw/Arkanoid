@@ -74,6 +74,7 @@ def open_guide_window():
         for event in pygame.event.get():
             if event.type == pygame.QUIT or d[pygame.K_ESCAPE]:
                 return
+
         pygame.display.flip()
 
 
@@ -111,7 +112,6 @@ def open_guide_window():
 
 def start_screen():
     fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
-    screen.blit(fon, (0, 0))
 
     smallfont = pygame.font.SysFont("Corbel", 35)
     color_light = (170, 170, 170)
@@ -123,6 +123,7 @@ def start_screen():
     text_guide = smallfont.render("Справка", True, "white")
 
     while True:
+        screen.blit(fon, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
