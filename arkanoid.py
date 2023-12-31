@@ -46,6 +46,7 @@ def open_guide_window():
         "Управление:",
         "  - Используйте стрелки для управления обезьянкой",
         "  - Нажмите ESC для выхода из игры",
+        "  - Нажмите Space, чтобы поставить паузу в игре или снять игру с паузы",
         "",
         "Геймплей:",
         "  - Кокос отскакивает от обезьянки и дощечек",
@@ -213,6 +214,7 @@ screen_size = screen_width, screen_height = 1580, 900
 screen = pygame.display.set_mode(screen_size, pygame.SCALED | pygame.FULLSCREEN)
 
 running = True
+pause = False
 clock = pygame.time.Clock()
 fps = 60
 
@@ -229,6 +231,7 @@ ball = pygame.Rect(ball_x, ball_y, ball_radius, ball_radius)
 
 ball_speed_x = 6
 ball_speed_y = -6
+platform_speed = 10
 
 brick_width = 130
 brick_height = 30
@@ -247,6 +250,7 @@ start_screen()
 fon = pygame.transform.scale(load_image("fon_screen.png"), (1580, 900))
 score = 0
 score_font = pygame.font.SysFont("Corbel", 30)
+pause_font = pygame.font.SysFont("Corbel", 60)
 
 while running:
     screen.blit(fon, (0, 0))
@@ -263,11 +267,22 @@ while running:
 
         if d[pygame.K_ESCAPE] or event.type == QUIT:
             running = False
+        if d[K_SPACE]:
+            if not pause:
+                memory = ball_speed_y, ball_speed_x, platform_speed
+                ball_speed_y = 0
+                ball_speed_x = 0
+                platform_speed = 0
+                pause = True
+                pause_surface = pause_font.render("Пауза", True, "white")
+            else:
+                ball_speed_y, ball_speed_x, platform_speed = memory
+                pause = False
 
     if d[K_LEFT] and platform.left > 0:
-        platform.left -= 10
+        platform.left -= platform_speed
     if d[K_RIGHT] and platform.right < screen_width:
-        platform.right += 10
+        platform.right += platform_speed
 
     ball.x += ball_speed_x
     ball.y += ball_speed_y
@@ -294,6 +309,8 @@ while running:
 
     score_surface = score_font.render("Score: " + str(score), True, "white")
     screen.blit(score_surface, (10, 10))
+    if pause:
+        screen.blit(pause_surface, (screen_width // 2 - 90, screen_height // 2))
 
     clock.tick(fps)
     pygame.display.flip()
