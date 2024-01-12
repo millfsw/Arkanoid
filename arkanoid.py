@@ -14,7 +14,7 @@ fps = 60
 
 name_player = ""
 
-selected_level = 3
+selected_level = 1
 
 running = True
 is_pause = False
@@ -348,15 +348,15 @@ def show_result_window(result):
         result_text = result_font.render("Победа!", True, "white")
         selected_level += 1
     else:
-        result_text = result_font.render("Game Over", True, "white")
+        result_text = result_font.render("Поражение!", True, "white")
 
     result_text_rect = result_text.get_rect(
         center=(screen_width // 2 + 250, screen_height // 2)
     )
-    score_surface = score_font.render("Score: " + str(score), True, "white")
+    score_surface = score_font.render("Итоговый Счёт: " + str(score), True, "white")
     screen.blit(result_screen, (0, 0))
     screen.blit(result_text, result_text_rect)
-    screen.blit(score_surface, (screen_width // 2 + 190, screen_height // 2 + 40))
+    screen.blit(score_surface, (screen_width // 2 + 130, screen_height // 2 + 40))
 
     while True:
         for event in pygame.event.get():
@@ -499,7 +499,7 @@ def start_game():
             show_result_window("win")
             return
 
-        score_surface = score_font.render("Score: " + str(score), True, "white")
+        score_surface = score_font.render("Кол-во очков: " + str(score), True, "white")
 
         group.update()
         group.draw(screen)
