@@ -12,6 +12,10 @@ screen = pygame.display.set_mode(screen_size, pygame.SCALED | pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 fps = 60
 
+name_player = ""
+
+selected_level = 1
+
 running = True
 is_pause = False
 is_menu = False
@@ -23,9 +27,7 @@ ball_radius = 70
 
 block_width = 130
 block_height = 80
-block_gap = 10
-block_rows = 4
-block_cols = (screen_width - block_gap) // (block_width + block_gap)
+block_gap = 26
 
 
 class Platform(pygame.sprite.Sprite):
@@ -36,8 +38,8 @@ class Platform(pygame.sprite.Sprite):
         )
         self.image.set_colorkey(0)
         self.rect = self.image.get_rect()
-        self.rect.x = screen_width // 2 - platform_width // 2 + 10
-        self.rect.y = screen_height - platform_height - 10
+        self.rect.x = screen_width // 2 - platform_width // 2
+        self.rect.y = screen_height - platform_height
         self.platform_speed = 10
 
     def update(self):
@@ -46,6 +48,7 @@ class Platform(pygame.sprite.Sprite):
             self.rect.left -= self.platform_speed
         if d[K_RIGHT] and self.rect.right < screen_width:
             self.rect.right += self.platform_speed
+
 
 class Ball(pygame.sprite.Sprite):
     def __init__(self):
@@ -61,6 +64,16 @@ class Ball(pygame.sprite.Sprite):
         self.ball_speed_y = -6
 
     def update(self):
+        if Rect(
+            self.rect.x,
+            self.rect.y + self.ball_speed_y,
+            ball_radius,
+            ball_radius,
+        ).colliderect(platform):
+            self.ball_speed_x, self.ball_speed_y = detect_collision(
+                self.ball_speed_x, self.ball_speed_y, self.rect, platform.rect
+            )
+
         self.rect.x += self.ball_speed_x
         self.rect.y += self.ball_speed_y
 
@@ -73,6 +86,7 @@ class Ball(pygame.sprite.Sprite):
                 self.ball_speed_x, self.ball_speed_y, self.rect, platform.rect
             )
 
+
 class Block(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
@@ -83,6 +97,36 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def update(self):
+        if self.rect.colliderect(ball):
+            ball.ball_speed_x, ball.ball_speed_y = detect_collision(
+                ball.ball_speed_x,
+                ball.ball_speed_y,
+                ball.rect,
+                self.rect,
+            )
+
+
+class No_Destructive_Block(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.transform.scale(
+            load_image("block.png"), (block_width, block_height)
+        )
+        self.image.set_colorkey(0)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        if self.rect.colliderect(ball):
+            ball.ball_speed_x, ball.ball_speed_y = detect_collision(
+                ball.ball_speed_x,
+                ball.ball_speed_y,
+                ball.rect,
+                self.rect,
+            )
 
 
 def terminate():
@@ -157,7 +201,54 @@ def open_guide_window():
 #     pass
 
 
+def registration_window():
+    global name_player
+    fon = pygame.transform.scale(load_image("result_window.png"), (1580, 900))
+    clock = pygame.time.Clock()
+    color = (255, 255, 255)
+    backcolor = None
+    font = pygame.font.SysFont(None, 100)
+    active = False
+    text = ""
+
+    while True:
+        screen.blit(fon, (0, 0))
+        event_list = pygame.event.get()
+        for event in event_list:
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+                start_screen()
+                return
+            elif event.type == pygame.KEYDOWN and event.key == K_RETURN:
+                name_player = text
+                return
+
+        t_surf = font.render(text, True, color, backcolor)
+        image = pygame.Surface(
+            (max(700, t_surf.get_width() + 10), t_surf.get_height() + 10),
+            pygame.SRCALPHA,
+        )
+        if backcolor:
+            image.fill(self.backcolor)
+        image.blit(t_surf, (5, 5))
+        pygame.draw.rect(image, color, image.get_rect().inflate(-2, -2), 2)
+        rect = image.get_rect(topleft=(700, 450))
+        screen.blit(image, (700, 450))
+
+        pygame.display.flip()
+        for event in event_list:
+            if event.type == pygame.MOUSEBUTTONDOWN and not active:
+                active = rect.collidepoint(event.pos)
+            if event.type == pygame.KEYDOWN and active:
+                if event.key == pygame.K_BACKSPACE:
+                    text = text[:-1]
+                else:
+                    text += event.unicode
+
+
 def start_screen():
+    pygame.mouse.set_visible(True)
     fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
 
     smallfont = pygame.font.SysFont("Corbel", 35)
@@ -179,6 +270,7 @@ def start_screen():
                     screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
                     and 550 <= mouse[1] <= 590
                 ):
+                    registration_window()
                     return
                 elif (
                     screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
@@ -248,11 +340,13 @@ def start_screen():
 
 
 def show_result_window(result):
+    global selected_level
     result_screen = pygame.transform.scale(load_image("result_window.png"), (1580, 900))
 
-    result_font = pygame.font.SysFont("Corbel", 80)
+    result_font = pygame.font.SysFont("MAIN_FONT", 80)
     if result == "win":
         result_text = result_font.render("Победа!", True, "white")
+        selected_level += 1
     else:
         result_text = result_font.render("Game Over", True, "white")
 
@@ -262,12 +356,17 @@ def show_result_window(result):
     score_surface = score_font.render("Score: " + str(score), True, "white")
     screen.blit(result_screen, (0, 0))
     screen.blit(result_text, result_text_rect)
-    screen.blit(score_surface, (screen_width // 2 + 160, screen_height // 2 + 40))
+    screen.blit(score_surface, (screen_width // 2 + 190, screen_height // 2 + 40))
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or pygame.key.get_pressed()[pygame.K_ESCAPE]:
+            if event.type == pygame.QUIT:
                 terminate()
+            if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+                start_screen()
+                return
+            if event.type == pygame.KEYDOWN and event.key == K_RETURN:
+                return
 
         pygame.display.flip()
 
@@ -282,16 +381,6 @@ def read_level_from_file(file_path):
                 row.append(char)
             level.append(row)
     return level
-
-
-def build_level(level_data):
-    max_count = len(max(level_data, key=lambda x: len(x)))
-
-
-level_data_1 = read_level_from_file("level_1.txt")
-build_level(level_data_1)
-# level_data_2 = read_level_from_file("level_2.txt")
-# level_data_3 = read_level_from_file("level_3.txt")
 
 
 def detect_collision(ball_speed_x, ball_speed_y, ball, rect):
@@ -313,15 +402,23 @@ def detect_collision(ball_speed_x, ball_speed_y, ball, rect):
     return ball_speed_x, ball_speed_y
 
 
-def show_blocks():
+def show_blocks(level):
     blocks = pygame.sprite.Group()
-    for row in range(block_rows):
-        for col in range(block_cols):
-            block_x = block_gap + col * (block_width + block_gap)
-            block_y = block_gap + row * (block_height + block_gap)
-            block = Block(block_x, block_y)
-            blocks.add(block)
-    return blocks
+    no_destructive_blocks = pygame.sprite.Group()
+    level_data = read_level_from_file(f"data/level_{level}.txt")
+    for row in range(len(level_data)):
+        for col in range(len(level_data[row])):
+            if level_data[row][col] == "B":
+                block_x = block_gap + col * (block_width + block_gap)
+                block_y = block_gap + row * (block_height + block_gap)
+                block = Block(block_x, block_y)
+                blocks.add(block)
+            elif level_data[row][col] == "X":
+                block_x = block_gap + col * (block_width + block_gap)
+                block_y = block_gap + row * (block_height + block_gap)
+                block = No_Destructive_Block(block_x, block_y)
+                no_destructive_blocks.add(block)
+    return blocks, no_destructive_blocks
 
 
 def pause_game(is_pause):
@@ -346,102 +443,123 @@ def menu_game(is_menu):
 
 fon = pygame.transform.scale(load_image("fon_screen.png"), (1580, 900))
 score = 0
-score_font = pygame.font.SysFont("Corbel", 40)
+score_font = pygame.font.SysFont("MAIN_FONT", 40)
 pause_font = pygame.font.SysFont("Corbel", 60)
 smallfont = pygame.font.SysFont("Corbel", 35)
 color_light = (170, 170, 170)
 color_dark = (100, 100, 100)
 
 
-group = pygame.sprite.Group()
-platform = Platform()
-ball = Ball()
-blocks = show_blocks()
-group.add(platform)
-group.add(ball)
-group.add(blocks)
+def start_game():
+    global score, is_pause, is_menu
+    score = 0
+    while True:
+        if not is_pause and not is_menu:
+            pygame.mouse.set_visible(False)
+        screen.blit(fon, (0, 0))
+        d = pygame.key.get_pressed()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
 
-start_screen()
-while running:
-    screen.blit(fon, (0, 0))
-    d = pygame.key.get_pressed()
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            running = False
+            if d[pygame.K_ESCAPE]:
+                if not is_pause:
+                    is_menu = not (is_menu)
+                    menu_surface = menu_game(is_menu)
 
-        if d[pygame.K_ESCAPE]:
-            if not is_pause:
-                is_menu = not (is_menu)
-                menu_surface = menu_game(is_menu)
+            if d[K_SPACE]:
+                if not is_menu:
+                    is_pause = not (is_pause)
+                    pause_surface = pause_game(is_pause)
 
-        if d[K_SPACE]:
-            if not is_menu:
-                is_pause = not (is_pause)
-                pause_surface = pause_game(is_pause)
+            if is_menu:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse = pygame.mouse.get_pos()
+                    if (
+                        screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
+                        and 400 <= mouse[1] <= 440
+                    ):
+                        is_menu = not (is_menu)
+                        menu_game(is_menu)
+                    elif (
+                        screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
+                        and 450 <= mouse[1] <= 490
+                    ):
+                        start_screen()
+                        return
+
+        if ball.rect.bottom >= screen_height:
+            show_result_window("gameover")
+            return
+
+        if pygame.sprite.spritecollide(ball, blocks, True):
+            score = all_score - len(blocks) * 10
+
+        elif len(blocks) == 0:
+            show_result_window("win")
+            return
+
+        score_surface = score_font.render("Score: " + str(score), True, "white")
+
+        group.update()
+        group.draw(screen)
+
+        if is_pause:
+            screen.blit(pause_surface, (screen_width // 2 - 90, screen_height // 2))
+            pygame.mouse.set_visible(True)
 
         if is_menu:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse = pygame.mouse.get_pos()
-                if (
-                    screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
-                    and 400 <= mouse[1] <= 440
-                ):
-                    is_menu = not (is_menu)
-                    menu_game(is_menu)
-                elif (
-                    screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
-                    and 450 <= mouse[1] <= 490
-                ):
-                    start_screen()
+            mouse = pygame.mouse.get_pos()
+            text_continue = smallfont.render("Продолжить", True, "white")
+            text_menu = smallfont.render("Выйти в главное меню", True, "white")
+            pygame.mouse.set_visible(True)
 
-    if ball.rect.bottom >= screen_height:
-        show_result_window("gameover")
-        running = False
+            if (
+                screen_width / 2 - 165 <= mouse[0] <= screen_width / 2 + 115
+                and 400 <= mouse[1] <= 440
+            ):
+                pygame.draw.rect(
+                    screen, color_light, [screen_width / 2 - 165, 400, 280, 40]
+                )
+            else:
+                pygame.draw.rect(
+                    screen, color_dark, [screen_width / 2 - 165, 400, 280, 40]
+                )
+            if (
+                screen_width / 2 - 195 <= mouse[0] <= screen_width / 2 + 150
+                and 450 <= mouse[1] <= 490
+            ):
+                pygame.draw.rect(
+                    screen, color_light, [screen_width / 2 - 195, 450, 345, 40]
+                )
+            else:
+                pygame.draw.rect(
+                    screen, color_dark, [screen_width / 2 - 195, 450, 345, 40]
+                )
 
-    if pygame.sprite.spritecollide(ball, blocks, True):
-        ball.ball_speed_y *= -1
-        score += 10
+            screen.blit(text_continue, (screen_width // 2 - 115, 405))
+            screen.blit(text_menu, (screen_width // 2 - 190, 455))
 
-    elif len(blocks) == 0:
-        show_result_window("win")
-        running = False
+        screen.blit(score_surface, (10, 10))
+        clock.tick(fps)
+        pygame.display.update()
 
-    score_surface = score_font.render("Score: " + str(score), True, "white")
 
-    group.update()
-    group.draw(screen)
-    if is_pause:
-        screen.blit(pause_surface, (screen_width // 2 - 90, screen_height // 2))
+start_screen()
 
-    if is_menu:
-        mouse = pygame.mouse.get_pos()
-        text_continue = smallfont.render("Продолжить", True, "white")
-        text_menu = smallfont.render("Выйти в главное меню", True, "white")
+while True:
+    group = pygame.sprite.Group()
+    platform = Platform()
+    ball = Ball()
+    blocks, no_destructive_blocks = show_blocks(selected_level)
+    group.add(platform)
+    group.add(ball)
+    group.add(blocks)
+    group.add(no_destructive_blocks)
 
-        if (
-            screen_width / 2 - 165 <= mouse[0] <= screen_width / 2 + 115
-            and 400 <= mouse[1] <= 440
-        ):
-            pygame.draw.rect(
-                screen, color_light, [screen_width / 2 - 165, 400, 280, 40]
-            )
-        else:
-            pygame.draw.rect(screen, color_dark, [screen_width / 2 - 165, 400, 280, 40])
-        if (
-            screen_width / 2 - 195 <= mouse[0] <= screen_width / 2 + 150
-            and 450 <= mouse[1] <= 490
-        ):
-            pygame.draw.rect(
-                screen, color_light, [screen_width / 2 - 195, 450, 345, 40]
-            )
-        else:
-            pygame.draw.rect(screen, color_dark, [screen_width / 2 - 195, 450, 345, 40])
+    level_data = read_level_from_file(f"data/level_{selected_level}.txt")
+    all_score = sum([x.count("B") for x in level_data]) * 10
+    start_game()
 
-        screen.blit(text_continue, (screen_width // 2 - 115, 405))
-        screen.blit(text_menu, (screen_width // 2 - 190, 455))
-
-    screen.blit(score_surface, (10, 10))
-    clock.tick(fps)
-    pygame.display.update()
 
 pygame.quit()
