@@ -14,7 +14,7 @@ fps = 60
 
 name_player = ""
 
-selected_level = 1
+selected_level = 3
 
 running = True
 is_pause = False
