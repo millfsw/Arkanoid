@@ -162,7 +162,7 @@ def open_guide_window():
         "Добро пожаловать в игру 'Арканоид'",
         "",
         "Цель:",
-        "  - Разрушить все бананы на уровне, отбивая кокос с помощью обезьянки.",
+        "  - Разрушить все фрукты на уровне, отбивая кокос с помощью обезьянки.",
         "",
         "Управление:",
         "  - Используйте стрелки для управления обезьянкой",
@@ -170,10 +170,11 @@ def open_guide_window():
         "  - Нажмите Space, чтобы поставить паузу в игре или снять игру с паузы",
         "",
         "Геймплей:",
-        "  - Кокос отскакивает от обезьянки, бананов и дощечек",
-        "  - Разбейте все бананы для того, чтобы пройти на следующий уровень.",
+        "  - Кокос отскакивает от обезьянки, фруктов и дощечек",
+        "  - Разбейте все фрукты для того, чтобы пройти на следующий уровень.",
         "  - Если кокос уйдет за нижнию границу экрана, игра будет окончено",
-        "  - Накапливайте очки за каждый банан",
+        "  - Накапливайте очки за каждый фрукт и попади в рейтин лучших",
+        "  - На уровнях могут попадаться дощечки, которые не ломаются",
         "",
         "Наслаждайтесь игрой 'Арканоид'!",
     ]
@@ -252,6 +253,7 @@ def start_screen():
     fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
 
     smallfont = pygame.font.SysFont("Corbel", 35)
+    cup_image = load_image("cup.png")
     color_light = (170, 170, 170)
     color_dark = (100, 100, 100)
 
@@ -288,8 +290,22 @@ def start_screen():
                     and 700 <= mouse[1] <= 740
                 ):
                     terminate()
+                elif (
+                    30 <= mouse[0] <= 90
+                    and screen_height - 90 <= mouse[1] <= screen_height - 30
+                ):
+                    # open_rating window()
+                    pass
 
         mouse = pygame.mouse.get_pos()
+
+        if (
+            30 <= mouse[0] <= 90
+            and screen_height - 90 <= mouse[1] <= screen_height - 30
+        ):
+            pygame.draw.rect(screen, color_light, [30, screen_height - 90, 60, 60])
+        else:
+            pygame.draw.rect(screen, color_dark, [30, screen_height - 90, 60, 60])
 
         if (
             screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
@@ -335,6 +351,7 @@ def start_screen():
         screen.blit(text_settings, (screen_width / 2 - 105, 605))
         screen.blit(text_guide, (screen_width / 2 - 90, 655))
         screen.blit(text_quit, (screen_width / 2 - 75, 705))
+        screen.blit(cup_image, [30, screen_height - 90, 60, 60])
 
         pygame.display.flip()
 
@@ -347,6 +364,7 @@ def show_result_window(result):
     if result == "win":
         result_text = result_font.render("Победа!", True, "white")
         selected_level += 1
+
     else:
         result_text = result_font.render("Поражение!", True, "white")
 
