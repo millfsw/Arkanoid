@@ -247,6 +247,33 @@ def registration_window():
                 else:
                     text += event.unicode
 
+def open_rating_window():
+    fon = pygame.transform.scale(load_image("result_window.png"), (1580, 900))
+
+    smallfont = pygame.font.SysFont("Corbel", 35)
+    color_dark = (100, 100, 100)
+
+    text_name = smallfont.render("Игрок", True, "white")
+    text_score = smallfont.render("Очки", True, "white")
+    text_level = smallfont.render("Уровень", True, "white")
+
+    while True:
+        screen.blit(fon, (0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+                start_screen()
+
+        pygame.draw.rect(screen, color_dark, [600, 100, 250, 40])
+        pygame.draw.rect(screen, color_dark, [900, 100, 250, 40])
+        pygame.draw.rect(screen, color_dark, [1200, 100, 250, 40])
+
+        screen.blit(text_name, (680, 103))
+        screen.blit(text_score, (985, 103))
+        screen.blit(text_level, (1265, 103))
+
+        pygame.display.flip()
 
 def start_screen():
     pygame.mouse.set_visible(True)
@@ -294,8 +321,8 @@ def start_screen():
                     30 <= mouse[0] <= 90
                     and screen_height - 90 <= mouse[1] <= screen_height - 30
                 ):
-                    # open_rating window()
-                    pass
+                    open_rating_window()
+                    # pass
 
         mouse = pygame.mouse.get_pos()
 
