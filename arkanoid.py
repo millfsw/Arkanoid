@@ -13,8 +13,8 @@ clock = pygame.time.Clock()
 fps = 60
 
 name_player = ""
+data_player = ""
 
-selected_level = 1
 
 running = True
 is_pause = False
@@ -70,6 +70,7 @@ class Ball(pygame.sprite.Sprite):
             ball_radius,
             ball_radius,
         ).colliderect(platform):
+            pygame.mixer.Sound("data/collision_1.wav").play()
             self.ball_speed_x, self.ball_speed_y = detect_collision(
                 self.ball_speed_x, self.ball_speed_y, self.rect, platform.rect
             )
@@ -82,6 +83,7 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.top < 10:
             self.ball_speed_y *= -1
         if self.rect.colliderect(platform):
+            pygame.mixer.Sound("data/collision_1.wav").play()
             self.ball_speed_x, self.ball_speed_y = detect_collision(
                 self.ball_speed_x, self.ball_speed_y, self.rect, platform.rect
             )
@@ -121,6 +123,7 @@ class No_Destructive_Block(pygame.sprite.Sprite):
 
     def update(self):
         if self.rect.colliderect(ball):
+            pygame.mixer.Sound("data/collision_1.wav").play()
             ball.ball_speed_x, ball.ball_speed_y = detect_collision(
                 ball.ball_speed_x,
                 ball.ball_speed_y,
@@ -203,7 +206,7 @@ def open_guide_window():
 
 
 def registration_window():
-    global name_player
+    global name_player, data_player
     fon = pygame.transform.scale(load_image("result_window.png"), (1580, 900))
     clock = pygame.time.Clock()
     color = (255, 255, 255)
@@ -223,6 +226,14 @@ def registration_window():
                 return
             elif event.type == pygame.KEYDOWN and event.key == K_RETURN:
                 name_player = text
+                with open("data/data_players.txt") as f:
+                    lines = f.read().splitlines()
+                    data_player = [x for x in lines if name_player in x]
+                    if data_player:
+                        data_player = data_player[-1].split("\t")
+                    else:
+                        data_player = [name_player, "0", "1"]
+                f.close()
                 return
 
         t_surf = font.render(text, True, color, backcolor)
@@ -237,7 +248,6 @@ def registration_window():
         rect = image.get_rect(topleft=(700, 450))
         screen.blit(image, (700, 450))
 
-        pygame.display.flip()
         for event in event_list:
             if event.type == pygame.MOUSEBUTTONDOWN and not active:
                 active = rect.collidepoint(event.pos)
@@ -247,6 +257,12 @@ def registration_window():
                 else:
                     text += event.unicode
 
+<<<<<<< HEAD
+=======
+        pygame.display.flip()
+
+
+>>>>>>> 5981425 (Edit presentation, add datebase and sound)
 def open_rating_window():
     fon = pygame.transform.scale(load_image("result_window.png"), (1580, 900))
 
@@ -263,7 +279,11 @@ def open_rating_window():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
+<<<<<<< HEAD
                 start_screen()
+=======
+                return
+>>>>>>> 5981425 (Edit presentation, add datebase and sound)
 
         pygame.draw.rect(screen, color_dark, [600, 100, 250, 40])
         pygame.draw.rect(screen, color_dark, [900, 100, 250, 40])
@@ -274,6 +294,10 @@ def open_rating_window():
         screen.blit(text_level, (1265, 103))
 
         pygame.display.flip()
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5981425 (Edit presentation, add datebase and sound)
 
 def start_screen():
     pygame.mouse.set_visible(True)
@@ -322,7 +346,10 @@ def start_screen():
                     and screen_height - 90 <= mouse[1] <= screen_height - 30
                 ):
                     open_rating_window()
+<<<<<<< HEAD
                     # pass
+=======
+>>>>>>> 5981425 (Edit presentation, add datebase and sound)
 
         mouse = pygame.mouse.get_pos()
 
@@ -384,7 +411,7 @@ def start_screen():
 
 
 def show_result_window(result):
-    global selected_level
+    global selected_level, score
     result_screen = pygame.transform.scale(load_image("result_window.png"), (1580, 900))
 
     result_font = pygame.font.SysFont("MAIN_FONT", 80)
@@ -496,7 +523,8 @@ color_dark = (100, 100, 100)
 
 
 def start_game():
-    global score, is_pause, is_menu
+    global is_pause, is_menu, score
+    all_score_player = data_player[1]
     score = 0
     while True:
         if not is_pause and not is_menu:
@@ -505,6 +533,16 @@ def start_game():
         d = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == QUIT:
+                if selected_level != 1 and int(all_score_player) + int(score) > int(
+                    data_player[1]
+                ):
+                    data_player[1] = str(int(score) + int(all_score_player))
+
+                elif selected_level == 1 and int(score) > int(data_player[1]):
+                    data_player[1] = score
+                f = open("data/data_players.txt", "a")
+                f.write("\n")
+                f.write("\t".join(map(str, data_player)))
                 terminate()
 
             if d[pygame.K_ESCAPE]:
@@ -530,10 +568,31 @@ def start_game():
                         screen_width / 2 - 150 <= mouse[0] <= screen_width / 2 + 100
                         and 450 <= mouse[1] <= 490
                     ):
+                        if selected_level != 1 and int(all_score_player) + int(
+                            score
+                        ) > int(data_player[1]):
+                            data_player[1] = str(int(score) + int(all_score_player))
+
+                        elif selected_level == 1 and int(score) > int(data_player[1]):
+                            data_player[1] = score
+                        f = open("data/data_players.txt", "a")
+                        f.write("\n")
+                        f.write("\t".join(map(str, data_player)))
                         start_screen()
                         return
 
         if ball.rect.bottom >= screen_height:
+            if selected_level != 1 and int(all_score_player) + int(score) > int(
+                data_player[1]
+            ):
+                data_player[1] = str(int(score) + int(all_score_player))
+
+            elif selected_level == 1 and int(score) > int(data_player[1]):
+                data_player[1] = score
+            f = open("data/data_players.txt", "a")
+            f.write("\n")
+            f.write("\t".join(map(str, data_player)))
+
             show_result_window("gameover")
             return
 
@@ -541,6 +600,15 @@ def start_game():
             score = all_score - len(blocks) * 10
 
         elif len(blocks) == 0:
+            data_player[1] = (
+                str(int(score) + int(all_score_player))
+                if selected_level != 1
+                else score
+            )
+            data_player[2] = data_player[2] + 1
+            f = open("data/data_players.txt", "a")
+            f.write("\n")
+            f.write("\t".join(map(str, data_player)))
             show_result_window("win")
             return
 
@@ -593,6 +661,7 @@ def start_game():
 start_screen()
 
 while True:
+    selected_level = int(data_player[2])
     group = pygame.sprite.Group()
     platform = Platform()
     ball = Ball()
