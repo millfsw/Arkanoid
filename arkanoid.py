@@ -257,12 +257,9 @@ def registration_window():
                 else:
                     text += event.unicode
 
-<<<<<<< HEAD
-=======
         pygame.display.flip()
 
 
->>>>>>> 5981425 (Edit presentation, add datebase and sound)
 def open_rating_window():
     fon = pygame.transform.scale(load_image("result_window.png"), (1580, 900))
 
@@ -279,11 +276,7 @@ def open_rating_window():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
-<<<<<<< HEAD
-                start_screen()
-=======
                 return
->>>>>>> 5981425 (Edit presentation, add datebase and sound)
 
         pygame.draw.rect(screen, color_dark, [600, 100, 250, 40])
         pygame.draw.rect(screen, color_dark, [900, 100, 250, 40])
@@ -294,10 +287,7 @@ def open_rating_window():
         screen.blit(text_level, (1265, 103))
 
         pygame.display.flip()
-<<<<<<< HEAD
-=======
 
->>>>>>> 5981425 (Edit presentation, add datebase and sound)
 
 def start_screen():
     pygame.mouse.set_visible(True)
@@ -346,10 +336,6 @@ def start_screen():
                     and screen_height - 90 <= mouse[1] <= screen_height - 30
                 ):
                     open_rating_window()
-<<<<<<< HEAD
-                    # pass
-=======
->>>>>>> 5981425 (Edit presentation, add datebase and sound)
 
         mouse = pygame.mouse.get_pos()
 
