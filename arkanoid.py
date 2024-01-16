@@ -513,12 +513,12 @@ def show_result_window(result, data_player):
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
-                data_player = [name_player, data_player[1], selected_level]
+                data_player = [name_player, data_player[1], data_player[2]]
                 writing_to_file(data_player)
                 terminate()
 
             if event.type == pygame.KEYDOWN and event.key == K_ESCAPE:
-                data_player = [name_player, data_player[1], selected_level]
+                data_player = [name_player, data_player[1], data_player[2]]
                 writing_to_file(data_player)
                 start_screen()
                 return
@@ -633,7 +633,7 @@ def start_game():
             if event.type == QUIT:
 
                 score_identifier(selected_level)
-                data_player = [name_player, data_player[1], selected_level]
+                data_player = [name_player, data_player[1], data_player[2]]
                 writing_to_file(data_player)
 
                 terminate()
@@ -666,7 +666,7 @@ def start_game():
                     ):
                         score_identifier(selected_level)
 
-                        data_player = [name_player, data_player[1], selected_level]
+                        data_player = [name_player, data_player[1], data_player[2]]
                         writing_to_file(data_player)
                         start_screen()
                         return
@@ -683,6 +683,7 @@ def start_game():
         elif len(blocks) == 0:
             # Проверка на победу в игре в случае разрушения всех блоков
             data_player[2] = str(int(data_player[2]) + 1)
+            print(data_player[2], "dasda")
             show_result_window("win", data_player)
             return
 
