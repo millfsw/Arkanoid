@@ -62,8 +62,9 @@ class Ball(pygame.sprite.Sprite):
     # Этот класс отвечает за мячик в виде кокоса. С помощью этого класса мячик отскакивает от платформы и разбивает блоки
     def __init__(self):
         super().__init__()
+        sprite = sprite_selection("Мяч")
         self.image = pygame.transform.scale(
-            load_image("coconut.png"), (BALL_RADIUS, BALL_RADIUS)
+            load_image(sprite), (BALL_RADIUS, BALL_RADIUS)
         )
         self.image.set_colorkey(0)
         self.rect = self.image.get_rect()
@@ -80,7 +81,13 @@ class Ball(pygame.sprite.Sprite):
             BALL_RADIUS,
             BALL_RADIUS,
         ).colliderect(platform):
-            pygame.mixer.Sound("data/collision_1.wav").play()
+            file = open("data/colors.txt")
+            lines = file.read().splitlines()
+            sound = pygame.mixer.Sound("data/collision_1.wav")
+            if lines[1] == "green":
+                sound.play()
+            else:
+                pygame.mixer.pause()
             self.ball_speed_x, self.ball_speed_y = detect_collision(
                 self.ball_speed_x, self.ball_speed_y, self.rect, platform.rect
             )
@@ -93,7 +100,13 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.top < 10:
             self.ball_speed_y *= -1
         if self.rect.colliderect(platform):
-            pygame.mixer.Sound("data/collision_1.wav").play()
+            file = open("data/colors.txt")
+            lines = file.read().splitlines()
+            sound = pygame.mixer.Sound("data/collision_1.wav")
+            if lines[1] == "green":
+                sound.play()
+            else:
+                pygame.mixer.pause()
             self.ball_speed_x, self.ball_speed_y = detect_collision(
                 self.ball_speed_x, self.ball_speed_y, self.rect, platform.rect
             )
@@ -103,8 +116,9 @@ class Block(pygame.sprite.Sprite):
     # Класс отвечает за  блоки в виде бананов, арбузов и анасов, которые можно изменить в настройках
     def __init__(self, x, y):
         super().__init__()
+        sprite = sprite_selection("Блок")
         self.image = pygame.transform.scale(
-            load_image("banana.png"), (BLOCK_WIDTH, BLOCK_HEIGHT)
+            load_image(sprite), (BLOCK_WIDTH, BLOCK_HEIGHT)
         )
         self.image.set_colorkey(0)
         self.rect = self.image.get_rect()
@@ -114,6 +128,13 @@ class Block(pygame.sprite.Sprite):
     def update(self):
         # Функция, которая проверяет столкновение с мячом
         if self.rect.colliderect(ball):
+            file = open("data/colors.txt")
+            lines = file.read().splitlines()
+            sound = pygame.mixer.Sound("data/collision_2.wav")
+            if lines[1] == "green":
+                sound.play()
+            else:
+                pygame.mixer.pause()
             ball.ball_speed_x, ball.ball_speed_y = detect_collision(
                 ball.ball_speed_x,
                 ball.ball_speed_y,
@@ -137,7 +158,13 @@ class No_Destructive_Block(pygame.sprite.Sprite):
     def update(self):
         # Функция, которая проверяет столкновение с мячом
         if self.rect.colliderect(ball):
-            pygame.mixer.Sound("data/collision_1.wav").play()
+            file = open("data/colors.txt")
+            lines = file.read().splitlines()
+            sound = pygame.mixer.Sound("data/collision_1.wav")
+            if lines[1] == "green":
+                sound.play()
+            else:
+                pygame.mixer.pause()
             ball.ball_speed_x, ball.ball_speed_y = detect_collision(
                 ball.ball_speed_x,
                 ball.ball_speed_y,
@@ -150,6 +177,29 @@ def terminate():
     # Эта функция отвечает за выход из игры
     pygame.quit()
     sys.exit()
+
+
+def sprite_selection(object_sprite):
+    # Выбор страйта обЪекта засчеь выбранной настройки
+    file = open("data/colors.txt", "r")
+    lines = file.read().splitlines()
+    if object_sprite == "Блок":
+        sprite = "banana.png" if lines[4] == "green" else "pineapple.png"
+
+    elif object_sprite == "Мяч":
+        sprite = "coconut.png" if lines[2] == "green" else "watermelon.png"
+
+    return sprite
+
+
+def play_music(res):
+    # Проигрыш музыки
+    pygame.mixer.music.load("data/music.mp3")
+    if res == "play":
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.1)
+    else:
+        pygame.mixer.music.pause()
 
 
 def writing_to_file(data_player):
@@ -235,8 +285,115 @@ def open_guide_window():
         pygame.display.flip()
 
 
-# def open_settings_window():
-#     pass
+def open_settings_window():
+    # Функция отвечает за открытие настроек. В txt-файле записаны цвета, в соответствии с этим меняются кнопки цветом. С помощью кнопок можно включать и выключать звук и музыку и изменять спрайты блоков, плтаформы и мячика
+    settings_screen = pygame.display.set_mode(
+        SCREEN_SIZE, pygame.SCALED | pygame.FULLSCREEN
+    )
+    settings_screen.fill((207, 143, 103))
+
+    red = (255, 0, 0)
+    green = (0, 255, 0)
+
+    file = open("data/colors.txt", "r")
+    lines = file.read().splitlines()
+    pygame.draw.rect(settings_screen, lines[0], [200, 50, 200, 50])
+    pygame.draw.rect(settings_screen, lines[1], [200, 200, 200, 50])
+    pygame.draw.rect(settings_screen, lines[2], [200, 350, 200, 50])
+    pygame.draw.rect(settings_screen, lines[3], [200, 500, 200, 50])
+    pygame.draw.rect(settings_screen, lines[4], [1000, 350, 200, 50])
+    pygame.draw.rect(settings_screen, lines[5], [1000, 500, 200, 50])
+    file.close()
+
+    note = pygame.transform.scale(load_image("note.png"), (70, 70))
+    note_rect = (100, 50, 70, 70)
+    settings_screen.blit(note, note_rect)
+
+    rupor = pygame.transform.scale(load_image("rupor.png"), (70, 70))
+    rupor_rect = (100, 200, 70, 70)
+    settings_screen.blit(rupor, rupor_rect)
+
+    coconut = pygame.transform.scale(load_image("coconut.png"), (80, 70))
+    coconut_rect = (90, 350, 80, 70)
+    settings_screen.blit(coconut, coconut_rect)
+
+    watermelon = pygame.transform.scale(load_image("watermelon.png"), (80, 70))
+    watermelon_rect = (85, 500, 80, 70)
+    settings_screen.blit(watermelon, watermelon_rect)
+
+    banana = pygame.transform.scale(load_image("banana.png"), (80, 70))
+    banana_rect = (900, 350, 80, 70)
+    settings_screen.blit(banana, banana_rect)
+
+    pineapple = pygame.transform.scale(load_image("pineapple.png"), (80, 70))
+    pineapple_rect = (900, 500, 80, 70)
+    settings_screen.blit(pineapple, pineapple_rect)
+
+    while True:
+        d = pygame.key.get_pressed()
+        mouse = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or d[pygame.K_ESCAPE]:
+                f = open("data/colors.txt", "w")
+                for line in lines:
+                    f.write(line)
+                    f.write("\n")
+                f.close()
+                return
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 200 <= mouse[0] <= 400 and 50 <= mouse[1] <= 100:
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
+                    if lines[0] == "red":
+                        lines[0] = "green"
+                        play_music("play")
+                    else:
+                        lines[0] = "red"
+                        play_music("stop")
+                    pygame.draw.rect(settings_screen, lines[0], [200, 50, 200, 50])
+
+                if 200 <= mouse[0] <= 400 and 200 <= mouse[1] <= 250:
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
+                    if lines[1] == "red":
+                        lines[1] = "green"
+                    else:
+                        lines[1] = "red"
+                    pygame.draw.rect(settings_screen, lines[1], [200, 200, 200, 50])
+
+                if 200 <= mouse[0] <= 400 and 350 <= mouse[1] <= 400:
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
+                    if lines[2] == "red":
+                        lines[2] = "green"
+                    else:
+                        lines[2] = "red"
+                    pygame.draw.rect(settings_screen, lines[2], [200, 350, 200, 50])
+
+                if 200 <= mouse[0] <= 400 and 500 <= mouse[1] <= 550:
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
+                    if lines[3] == "green":
+                        lines[3] = "red"
+                    else:
+                        lines[3] = "green"
+                    pygame.draw.rect(settings_screen, lines[3], [200, 500, 200, 50])
+
+                if 1000 <= mouse[0] <= 1200 and 350 <= mouse[1] <= 400:
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
+                    if lines[4] == "red":
+                        lines[4] = "green"
+                    else:
+                        lines[4] = "red"
+                    pygame.draw.rect(settings_screen, lines[4], [1000, 350, 200, 50])
+
+                if 1000 <= mouse[0] <= 1200 and 500 <= mouse[1] <= 550:
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
+                    if lines[5] == "green":
+                        lines[5] = "red"
+                    else:
+                        lines[5] = "green"
+                    pygame.draw.rect(settings_screen, lines[5], [1000, 500, 200, 50])
+
+        pygame.display.flip()
+
+        pygame.display.flip()
 
 
 def registration_window():
@@ -360,6 +517,12 @@ def open_rating_window():
 
 def start_screen():
     # Функция, которая инициализирует главное меню игры
+    file = open("data/colors.txt")
+    lines = file.read().splitlines()
+    if lines[0] == "green":
+        play_music("play")
+    else:
+        play_music("stop")
     pygame.mouse.set_visible(True)
     fon = pygame.transform.scale(load_image("start_window.png"), (1580, 900))
 
@@ -392,8 +555,7 @@ def start_screen():
                     SCREEN_WIDTH / 2 - 150 <= mouse[0] <= SCREEN_WIDTH / 2 + 100
                     and 600 <= mouse[1] <= 640
                 ):
-                    pass
-                    # open_settings_window()
+                    open_settings_window()
 
                 elif (
                     SCREEN_WIDTH / 2 - 150 <= mouse[0] <= SCREEN_WIDTH / 2 + 100
@@ -484,21 +646,49 @@ def show_result_window(result, data_player):
         if selected_level == 1:
             data_player[1] = score
             result_text = result_font.render("Победа!", True, "white")
+            file = open("data/colors.txt")
+            lines = file.read().splitlines()
+            sound = pygame.mixer.Sound("data/win.wav")
+            if lines[1] == "green":
+                sound.play()
+            else:
+                pygame.mixer.pause()
 
         elif selected_level == 2:
             data_player[1] = 400 + score
             result_text = result_font.render("Победа!", True, "white")
+            file = open("data/colors.txt")
+            lines = file.read().splitlines()
+            sound = pygame.mixer.Sound("data/win.wav")
+            if lines[1] == "green":
+                sound.play()
+            else:
+                pygame.mixer.pause()
 
         elif selected_level == 3:
             data_player[1] = 600 + score
             result_text = result_font.render(
                 "Поздравляем, вы прошли игру!", True, "white"
             )
+            file = open("data/colors.txt")
+            lines = file.read().splitlines()
+            sound = pygame.mixer.Sound("data/win.wav")
+            if lines[1] == "green":
+                sound.play()
+            else:
+                pygame.mixer.pause()
 
     else:
         score_identifier(selected_level)
 
         result_text = result_font.render("Поражение!", True, "white")
+        file = open("data/colors.txt")
+        lines = file.read().splitlines()
+        sound = pygame.mixer.Sound("data/game_over.wav")
+        if lines[1] == "green":
+            sound.play()
+        else:
+            pygame.mixer.pause()
 
     result_text_rect = result_text.get_rect(
         center=(SCREEN_WIDTH // 2 + 250, SCREEN_HEIGHT // 2)
