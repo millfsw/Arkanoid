@@ -49,7 +49,7 @@
 5. Запустите игру:
 
    
-   `python Arkanoid.py`
+   `python arkanoid.py`
    
 
 ## Управление
