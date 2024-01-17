@@ -1,2 +1,2 @@
-Mila	450	2
-Sasha	940	1
+Mila	430	2
+Sasha	940	3
