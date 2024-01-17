@@ -873,7 +873,6 @@ def start_game():
         elif len(blocks) == 0:
             # Проверка на победу в игре в случае разрушения всех блоков
             data_player[2] = str(int(data_player[2]) + 1)
-            print(data_player[2], "dasda")
             show_result_window("win", data_player)
             return
 
