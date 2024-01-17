@@ -1,3 +1,2 @@
 Mila	430	2
 Sasha	940	3
-lvl1	390	1
