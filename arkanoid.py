@@ -644,7 +644,7 @@ def show_result_window(result, data_player):
 
     if result == "win":
         if selected_level == 1:
-            data_player[1] = score
+            data_player[1] = max(int(data_player[1]), score)
             result_text = result_font.render("Победа!", True, "white")
             file = open("data/colors.txt")
             lines = file.read().splitlines()
@@ -655,7 +655,7 @@ def show_result_window(result, data_player):
                 pygame.mixer.pause()
 
         elif selected_level == 2:
-            data_player[1] = 400 + score
+            data_player[1] = max(int(data_player[1]), 400 + score)
             result_text = result_font.render("Победа!", True, "white")
             file = open("data/colors.txt")
             lines = file.read().splitlines()
@@ -666,7 +666,7 @@ def show_result_window(result, data_player):
                 pygame.mixer.pause()
 
         elif selected_level == 3:
-            data_player[1] = 600 + score
+            data_player[1] = max(int(data_player[1]), 600 + score)
             result_text = result_font.render(
                 "Поздравляем, вы прошли игру!", True, "white"
             )
