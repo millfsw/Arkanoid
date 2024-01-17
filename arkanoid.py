@@ -548,6 +548,7 @@ def start_screen():
                     SCREEN_WIDTH / 2 - 150 <= mouse[0] <= SCREEN_WIDTH / 2 + 100
                     and 550 <= mouse[1] <= 590
                 ):
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
                     registration_window()
                     return
 
@@ -555,12 +556,14 @@ def start_screen():
                     SCREEN_WIDTH / 2 - 150 <= mouse[0] <= SCREEN_WIDTH / 2 + 100
                     and 600 <= mouse[1] <= 640
                 ):
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
                     open_settings_window()
 
                 elif (
                     SCREEN_WIDTH / 2 - 150 <= mouse[0] <= SCREEN_WIDTH / 2 + 100
                     and 650 <= mouse[1] <= 690
                 ):
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
                     open_guide_window()
 
                 elif (
@@ -573,6 +576,7 @@ def start_screen():
                     30 <= mouse[0] <= 90
                     and SCREEN_HEIGHT - 90 <= mouse[1] <= SCREEN_HEIGHT - 30
                 ):
+                    pygame.mixer.Sound("data/clicked_button.wav").play()
                     open_rating_window()
 
         mouse = pygame.mouse.get_pos()
@@ -644,7 +648,7 @@ def show_result_window(result, data_player):
 
     if result == "win":
         if selected_level == 1:
-            data_player[1] = max(int(data_player[1]), score)
+            data_player[1] = score
             result_text = result_font.render("Победа!", True, "white")
             file = open("data/colors.txt")
             lines = file.read().splitlines()
@@ -655,7 +659,7 @@ def show_result_window(result, data_player):
                 pygame.mixer.pause()
 
         elif selected_level == 2:
-            data_player[1] = max(int(data_player[1]), 400 + score)
+            data_player[1] = 400 + score
             result_text = result_font.render("Победа!", True, "white")
             file = open("data/colors.txt")
             lines = file.read().splitlines()
@@ -666,7 +670,7 @@ def show_result_window(result, data_player):
                 pygame.mixer.pause()
 
         elif selected_level == 3:
-            data_player[1] = max(int(data_player[1]), 600 + score)
+            data_player[1] = 600 + score
             result_text = result_font.render(
                 "Поздравляем, вы прошли игру!", True, "white"
             )
@@ -873,6 +877,7 @@ def start_game():
         elif len(blocks) == 0:
             # Проверка на победу в игре в случае разрушения всех блоков
             data_player[2] = str(int(data_player[2]) + 1)
+            print(data_player[2], "dasda")
             show_result_window("win", data_player)
             return
 
